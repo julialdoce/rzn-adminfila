@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fila de Motoristas - Raízen</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F5F5F5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background-color: #FFFFFF;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .logo {
+            width: 60px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        h2 {
+            color: #660099;
+            font-weight: bold;
+            text-align: center;
+            margin: 0;
+            font-size: 2rem;
+        }
+        .driver-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            font-size: 1.5rem;
+        }
+        .driver-list li {
+            padding: 15px;
+            border-bottom: 1px solid #DDD;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .driver-name {
+            font-weight: bold;
+            color: #333;
+        }
+        .driver-time {
+            color: #660099;
+        }
+        .completed {
+            background-color: #d4f0d4;
+        }
+        .footer {
+            text-align: center;
+            font-size: 1rem;
+            color: #999;
+            margin-top: 20px;
+        }
+        .form-container {
+            margin-top: 20px;
+        }
+        .form-container input {
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #DDD;
+            border-radius: 4px;
+        }
+        .form-container button {
+            padding: 10px 15px;
+            background-color: #660099;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .remove-button {
+            background-color: #FF6666;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <img src="https://logospng.org/download/raizen/logo-raizen-1024.png" alt="Raízen Logo" class="logo">
+    <div class="container">
+        <div class="header">
+            <h2>Fila de Motoristas</h2>
+        </div>
+
+        <ul class="driver-list" id="driverList"></ul>
+
+        <div class="form-container">
+            <input type="text" id="driverPlate" placeholder="Placa do motorista" required>
+            <input type="time" id="driverTime" required>
+            <button onclick="addDriver()">Adicionar Motorista</button>
+        </div>
+
+        <div class="footer">
+            <p>Raízen © 2024 - Todos os direitos reservados</p>
+        </div>
+    </div>
+
+    <script>
+        let drivers = [];
+
+        function addDriver() {
+            const plate = document.getElementById('driverPlate').value.trim();
+            const time = document.getElementById('driverTime').value;
+            
+            if (!plate || !time) {
+                alert('Preencha todos os campos.');
+                return;
+            }
+            
+            if (drivers.some(driver => driver.plate === plate)) {
+                alert('Este motorista já está na fila.');
+                return;
+            }
+
+            drivers.push({ plate, time, completed: false });
+            displayDrivers();
+            document.getElementById('driverPlate').value = '';
+            document.getElementById('driverTime').value = '';
+        }
+
+        function displayDrivers() {
+            const driverList = document.getElementById('driverList');
+            driverList.innerHTML = '';
+
+            drivers.forEach((driver, index) => {
+                const li = document.createElement('li');
+                li.className = driver.completed ? 'completed' : '';
+                li.innerHTML = `
+                    <span class="driver-name">${driver.plate}</span>
+                    <span class="driver-time">${driver.time}</span>
+                    <button class="remove-button" onclick="removeDriver(${index})">Retirar</button>
+                `;
+                li.onclick = () => markCompleted(index);
+                driverList.appendChild(li);
+            });
+        }
+
+        function markCompleted(index) {
+            drivers[index].completed = true;
+            displayDrivers();
+        }
+
+        function removeDriver(index) {
+            drivers.splice(index, 1);
+            displayDrivers();
+        }
+    </script>
+</body>
+</html>
